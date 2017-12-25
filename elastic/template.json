@@ -14,16 +14,13 @@
         "http": {
             "properties": {
                 "status_msg": {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "text"
                 },
                 "user_agent": {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "text"
                 },
                 "uri": {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "text"
                 }
             }
         },
@@ -52,8 +49,7 @@
                     "type": "ip"
                 },
                 "mime_type": {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "text"
                 }
             }
         },
@@ -67,8 +63,7 @@
         "notice": {
             "properties": {
                 "note": {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "text"
                 }
             }
         },
@@ -81,52 +76,43 @@
                     "type": "ip"
                 },
                 "validation_status": {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "text"
                 },
                 "server_name": {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "text"
                 }
             }
         },
         "dns": {
             "properties": {
                 "answers": {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "text"
                 },
                 "query": {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "text"
                 }
             }
         },
         "intel": {
             "properties": {
                 "sources": {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "text"
                 },
                 "seen_indicator_type": {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "text"
                 },
                 "seen_where": {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "text"
                 }
             }
         },
         "weird": {
             "properties": {
                 "name": {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "text"
                 },
                 "query": {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "text"
                 }
             }
         }

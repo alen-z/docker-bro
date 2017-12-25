@@ -2,9 +2,10 @@ FROM alpine:3.7
 
 LABEL maintainer "https://github.com/blacktop"
 
-ENV BRO_VERSION 2.5.1
+ENV BRO_VERSION 2.5.2
 
 COPY patches /tmp
+
 RUN apk add --no-cache zlib openssl libstdc++ libpcap geoip libgcc tini curl inotify-tools jq bind-tools
 RUN apk add --no-cache -t .build-deps \
                           linux-headers \
@@ -24,31 +25,37 @@ RUN apk add --no-cache -t .build-deps \
                           flex \
                           git \
                           g++ \
-                          fts \
-  && cd /tmp \
-  && git clone --recursive --branch v$BRO_VERSION git://git.bro.org/bro \
-  && echo "===> Applying patches..." \
+                          fts
+
+WORKDIR /tmp
+
+RUN git clone --recursive --branch v$BRO_VERSION git://git.bro.org/bro
+
+RUN echo "===> Applying patches..." \
   && cd /tmp/bro \
   && patch -p1 < /tmp/bro-musl.patch \
   && cp /tmp/FindFTS.cmake cmake \
   && cd /tmp/bro/aux/binpac \
-  && patch -p1 < /tmp/binpac-musl.patch \
-  && echo "===> Compiling bro..." \
+  && patch -p1 < /tmp/binpac-musl.patch
+
+RUN echo "===> Compiling bro..." \
   && cd /tmp/bro \
   && CC=clang ./configure --disable-broker \
                           --disable-broctl --disable-broccoli \
                           --disable-auxtools --prefix=/usr/local \
   && make \
-  && make install \
-  && echo "===> Compiling af_packet plugin..." \
+  && make install
+
+RUN echo "===> Compiling af_packet plugin..." \
   && cd /tmp/bro/aux/plugins \
   && git clone https://github.com/J-Gras/bro-af_packet-plugin \
   && cd /tmp/bro/aux/plugins/bro-af_packet-plugin \
   && make distclean \
   && CC=clang ./configure --with-kernel=/usr \
   && make \
-  && make install \
-  && echo "===> Compiling elasticsearch plugin..." \
+  && make install
+
+RUN echo "===> Compiling elasticsearch plugin..." \
   && git clone -b release https://github.com/bro/bro-plugins.git /tmp/plugins \
   && mv /tmp/plugins/elasticsearch /tmp/bro/aux/plugins/elasticsearch \
   && echo "* Tweaks to improve elasticsearch plugin's performance in docker" \
@@ -69,10 +76,12 @@ RUN apk add --no-cache -t .build-deps \
   && cd /tmp/bro/aux/plugins/elasticsearch \
   && CC=clang ./configure \
   && make \
-  && make install \
-  && echo "* Stop local logging to prevent filling up the container with logs" \
-  && sed -i "s/WRITER_ASCII/WRITER_NONE/g" /usr/local/share/bro/base/frameworks/logging/main.bro \
-  && echo "===> Shrinking image..." \
+  && make install
+
+RUN echo "* Stop local logging to prevent filling up the container with logs" \
+  && sed -i "s/WRITER_ASCII/WRITER_NONE/g" /usr/local/share/bro/base/frameworks/logging/main.bro
+
+RUN echo "===> Shrinking image..." \
   && strip -s /usr/local/bin/bro \
   && rm -rf /tmp/* \
   && apk del --purge .build-deps
